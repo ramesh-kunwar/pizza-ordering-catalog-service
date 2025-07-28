@@ -1,3 +1,7 @@
+# /config only ignores config folder that is inside the root
+/config
+
+
 # Logs
 logs
 *.log
@@ -136,4 +140,3 @@ dist
 .pnp.*
 
 logs
-config
