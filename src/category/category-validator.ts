@@ -18,13 +18,14 @@ export default [
         .withMessage("Price type must be a string")
         .custom((value: "base" | "additional") => {
             const validKeys = ["base", "additional"];
-            if (validKeys.includes(value)) {
+            if (!validKeys.includes(value)) {
                 throw new Error(
                     `${value} is invalid attribute for priceType field. Possible values are: [${validKeys.join(
                         ", ",
                     )}]`,
                 );
             }
+            return true;
         }),
 
     body("attributes").exists().withMessage("Attributes are required"),
