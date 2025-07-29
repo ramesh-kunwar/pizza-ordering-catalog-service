@@ -1,22 +1,22 @@
 import mongoose from "mongoose";
 
-const priceConfigurationSchema = new mongoose.Schema({
-    priceType: {
-        type: String,
-        enum: ["base", "additional"],
-    },
-    availableOptioiins: {
-        type: Map,
-        of: Number,
-    },
-});
-
 const attributeValueSchema = new mongoose.Schema({
     name: {
         type: String,
     },
     value: {
         type: mongoose.Schema.Types.Mixed,
+    },
+});
+
+const priceConfigurationSchema = new mongoose.Schema({
+    priceType: {
+        type: String,
+        enum: ["base", "additional"],
+    },
+    availableOptions: {
+        type: Map,
+        of: Number,
     },
 });
 
@@ -34,7 +34,7 @@ const productSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        priceConfigurationSchema: {
+        priceConfiguration: {
             type: Map,
             of: priceConfigurationSchema,
         },
@@ -47,7 +47,7 @@ const productSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category",
         },
-        isPublished: {
+        isPublish: {
             type: Boolean,
             required: false,
             default: false,
