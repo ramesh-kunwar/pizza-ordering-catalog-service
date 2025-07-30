@@ -96,6 +96,7 @@ public/
 # Next.js build output
 .next
 out
+.DS_Store
 
 # Nuxt.js build / generate output
 .nuxt
