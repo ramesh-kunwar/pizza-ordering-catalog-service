@@ -63,4 +63,57 @@ export class ProductController {
             id: (newProduct as { id: unknown }).id,
         });
     };
+
+    update = async (req: Request, res: Response, next: NextFunction) => {
+        const result = validationResult(req);
+
+        if (!result.isEmpty()) {
+            return next(createHttpError(400, result.array()[0].msg as string));
+        }
+
+        const { productId } = req.params;
+
+        let imageName: string | undefined;
+        let oldImage: string | undefined;
+        if (req.files?.image) {
+            oldImage = await this.productService.getProductImage(productId);
+
+            const image = req.files?.image as UploadedFile;
+            imageName = uuidv4();
+
+            await this.storage.upload({
+                filename: imageName,
+                fileData: image.data.buffer,
+            });
+
+            await this.storage.delete(oldImage);
+        }
+
+        const {
+            name,
+            description,
+            priceConfiguration,
+            attributes,
+            tenantId,
+            categoryId,
+            isPublished,
+        } = req.body as CreateProductRequest;
+
+        const product: Product = {
+            name,
+            description,
+            priceConfiguration: JSON.parse(priceConfiguration),
+            attributes: JSON.parse(attributes),
+            tenantId,
+            categoryId,
+            isPublished,
+            image: imageName ? imageName : (oldImage as string),
+        };
+
+        await this.productService.updateProduct(productId, product);
+
+        return res.json({
+            id: productId,
+        });
+    };
 }
