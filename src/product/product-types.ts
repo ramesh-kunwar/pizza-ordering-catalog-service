@@ -11,6 +11,7 @@ export interface CreateProductRequest {
 }
 
 export interface Product {
+    _id?: mongoose.Types.ObjectId;
     name: string;
     description: string;
     priceConfiguration: unknown; // Parsed JSON object
@@ -25,4 +26,9 @@ export interface Filter {
     tenantId?: string;
     categoryId?: mongoose.Types.ObjectId;
     isPublished?: boolean;
+}
+
+export interface PaginateQuery {
+    page?: number;
+    limit?: number;
 }

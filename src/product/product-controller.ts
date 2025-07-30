@@ -64,7 +64,7 @@ export class ProductController {
 
         // todo: send response
         res.json({
-            id: (newProduct as { id: unknown }).id,
+            id: newProduct._id,
         });
     };
 
@@ -168,6 +168,10 @@ export class ProductController {
         const products = await this.productService.getProducts(
             q as string,
             filters,
+            {
+                page: parseInt(req.query.page as string) || 1,
+                limit: parseInt(req.query.limit as string) || 10,
+            },
         );
 
         res.json({
