@@ -29,15 +29,11 @@ export class S3Storage implements FileStorage {
         return await this.client.send(new PutObjectCommand(objectParams));
     }
 
-    delete() {
-        // Implement S3 object deletion
+    async delete(): Promise<void> {
+        // S3 delete implementation
     }
-    // getObjectUri(filename: string): void {
-    //     // Implement S3 object URI retrieval
-    //     // return Promise.resolve();
-    // }
 
-    getObjectUri() {
-        //
+    getObjectUri(): string {
+        return "";
     }
 }
