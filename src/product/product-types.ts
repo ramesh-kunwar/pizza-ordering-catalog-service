@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export interface CreateProductRequest {
     name: string;
     description: string;
@@ -16,5 +18,11 @@ export interface Product {
     tenantId: string;
     categoryId: string;
     image: string;
+    isPublished?: boolean;
+}
+
+export interface Filter {
+    tenantId?: string;
+    categoryId?: mongoose.Types.ObjectId;
     isPublished?: boolean;
 }
