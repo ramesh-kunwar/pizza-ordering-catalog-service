@@ -29,4 +29,14 @@ export class CategoryController {
         this.logger.info(`Created category`, { id: category._id });
         res.json({ id: category._id });
     }
+
+    async getAll(req: Request, res: Response) {
+        const categories = await this.categoryService.getAll();
+
+        this.logger.info(`Fetched all categories`, {
+            count: categories.length,
+        });
+
+        res.json(categories);
+    }
 }
