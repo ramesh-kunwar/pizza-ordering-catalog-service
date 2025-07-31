@@ -11,6 +11,7 @@ export class CategoryController {
         private logger: Logger,
     ) {
         this.create = this.create.bind(this);
+        this.getAll = this.getAll.bind(this);
     }
 
     async create(req: Request, res: Response, next: NextFunction) {
