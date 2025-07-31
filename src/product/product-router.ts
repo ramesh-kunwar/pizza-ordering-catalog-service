@@ -8,15 +8,18 @@ import { ProductController } from "./product-controller";
 import createProductValidator from "./create-product-validator";
 import { ProductService } from "./product-service";
 import fileUpload from "express-fileupload";
-import { S3Storage } from "../common/services/S3Storage";
+import { CloudinaryStorage } from "../common/services/CloudinaryStorage";
 import createHttpError from "http-errors";
 import updateProductValidator from "./update-product-validator";
 
 const router = express.Router();
 
 const productService = new ProductService();
-const s3Storage = new S3Storage();
-const productController = new ProductController(productService, s3Storage);
+const cloudinaryStorage = new CloudinaryStorage();
+const productController = new ProductController(
+    productService,
+    cloudinaryStorage,
+);
 
 router.post(
     "/",

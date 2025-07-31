@@ -28,12 +28,26 @@ export class ProductController {
         }
 
         const imageName = uuidv4();
-        // TODO : Image upload
-        const image = req.files?.image as UploadedFile;
-        await this.storage.upload({
-            filename: imageName,
-            fileData: image.data.buffer,
-        });
+
+        // Check if image file exists
+        if (!req.files?.image) {
+            return next(createHttpError(400, "Product image is required"));
+        }
+
+        const image = req.files.image as UploadedFile;
+
+        try {
+            // Upload image to Cloudinary
+            await this.storage.upload({
+                filename: imageName,
+                fileData: image.data,
+            });
+
+            logger.info(`Image uploaded successfully: ${imageName}`);
+        } catch (error) {
+            logger.error(`Failed to upload image: ${(error as Error).message}`);
+            return next(createHttpError(500, "Failed to upload product image"));
+        }
 
         const {
             name,
@@ -100,15 +114,33 @@ export class ProductController {
         if (req.files?.image) {
             oldImage = product.image;
 
-            const image = req.files?.image as UploadedFile;
+            const image = req.files.image as UploadedFile;
             imageName = uuidv4();
 
-            await this.storage.upload({
-                filename: imageName,
-                fileData: image.data.buffer,
-            });
+            try {
+                // Upload new image to Cloudinary
+                await this.storage.upload({
+                    filename: imageName,
+                    fileData: image.data,
+                });
 
-            await this.storage.delete(oldImage);
+                logger.info(`New image uploaded successfully: ${imageName}`);
+
+                // Delete old image from Cloudinary
+                if (oldImage) {
+                    await this.storage.delete(oldImage);
+                    logger.info(`Old image deleted successfully: ${oldImage}`);
+                }
+            } catch (error) {
+                logger.error(
+                    `Failed to update product image: ${
+                        (error as Error).message
+                    }`,
+                );
+                return next(
+                    createHttpError(500, "Failed to update product image"),
+                );
+            }
         }
 
         const {
