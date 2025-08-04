@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
     cors({
-        origin: [config.get("FRONT_END_URL")],
+        origin: config.get("FRONT_END_URLS"),
         credentials: true,
     }),
 );
