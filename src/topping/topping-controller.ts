@@ -4,6 +4,8 @@ import { v4 as uuidv4 } from "uuid";
 import { FileStorage } from "../common/types/storage";
 import { CreataeRequestBody, Topping } from "./topping-types";
 import { ToppingService } from "./topping-service";
+import logger from "../config/logger";
+import createHttpError from "http-errors";
 
 export class ToppingController {
     constructor(
@@ -20,11 +22,22 @@ export class ToppingController {
             const image = req.files!.image as UploadedFile;
             const fileUuid = uuidv4();
 
-            // todo: add error handling
-            await this.storage.upload({
-                filename: fileUuid,
-                fileData: image.data.buffer,
-            });
+            try {
+                // Upload image to Cloudinary
+                await this.storage.upload({
+                    filename: fileUuid,
+                    fileData: image.data,
+                });
+
+                logger.info(`Image uploaded successfully: ${fileUuid}`);
+            } catch (error) {
+                logger.error(
+                    `Failed to upload image: ${(error as Error).message}`,
+                );
+                return next(
+                    createHttpError(500, "Failed to upload product image"),
+                );
+            }
 
             // todo: add error handling
             const savedTopping = await this.toppingService.create({
@@ -48,6 +61,7 @@ export class ToppingController {
             // todo: add error handling
             const readyToppings = toppings.map((topping) => {
                 return {
+                    _id: topping._id,
                     name: topping.name,
                     price: topping.name,
                     tenantId: topping.tenantId,
